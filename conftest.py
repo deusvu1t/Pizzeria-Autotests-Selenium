@@ -3,9 +3,11 @@ from typing import Generator
 import pytest
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from core.config.settings import Settings, settings
-from core.driver.factory import create_driver
-from core.utils.logger import get_logger, setup_logging
+from src.config.settings import Settings, settings
+from src.browser.factory import create_driver
+from src.utils.logger import get_logger, setup_logging
+from src.pages.cart_page import CartPage
+from src.pages.main_page import MainPage
 
 logger = get_logger(__name__)
 
@@ -53,3 +55,13 @@ def driver(
     )
     driver.quit()
     logger.info("Browser closed | %s", test_name)
+
+
+@pytest.fixture
+def main_page(driver):
+    return MainPage(driver)
+
+
+@pytest.fixture
+def cart_page(driver):
+    return CartPage(driver)

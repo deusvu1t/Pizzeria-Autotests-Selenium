@@ -5,12 +5,12 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 
-from core.config.settings import Browser, RunMode, Settings
-from core.driver.options import (
+from src.config.settings import Browser, RunMode, Settings
+from src.browser.options import (
     get_chrome_options,
     get_firefox_options,
 )
-from core.utils.logger import get_logger
+from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

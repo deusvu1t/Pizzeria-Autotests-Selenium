@@ -1,7 +1,7 @@
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
-from core.config.settings import Settings
+from src.config.settings import Settings
 
 
 def get_chrome_options(settings: Settings) -> ChromeOptions:
