@@ -28,9 +28,6 @@ def driver(request: pytest.FixtureRequest) -> Generator[WebDriver, None, None]:
 
     driver = create_driver(settings)
 
-    driver.implicitly_wait(settings.timeout)
-    driver.set_page_load_timeout(settings.page_load_timeout)
-
     yield driver
 
     logger.info(

@@ -1,4 +1,4 @@
-from src.core.ui.base_page import BasePage
+from src.pages.base_page import BasePage
 
 
 class CartPage(BasePage):
