@@ -1,5 +1,6 @@
 from typing import Generator
 
+import allure
 import pytest
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -26,14 +27,22 @@ def driver(request: pytest.FixtureRequest) -> Generator[WebDriver, None, None]:
         settings.headless,
     )
 
-    driver = create_driver(settings)
+    allure.dynamic.parameter("browser", settings.browser)
+    allure.dynamic.parameter("headless", settings.headless)
 
-    yield driver
+    with allure.step(
+        f"Запустить браузер {settings.browser} | headless={settings.headless}"
+    ):
+        driver = create_driver(settings)
 
-    logger.info(
-        "END TEST | %s | session_id=%s",
-        test_name,
-        driver.session_id,
-    )
+    try:
+        yield driver
+    finally:
+        logger.info(
+            "END TEST | %s | session_id=%s",
+            test_name,
+            driver.session_id,
+        )
 
-    driver.quit()
+        with allure.step("Закрыть браузер"):
+            driver.quit()

@@ -1,6 +1,11 @@
+import allure
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
+
+from src.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 class BaseComponent:
@@ -10,19 +15,32 @@ class BaseComponent:
         self.wait = WebDriverWait(driver, timeout)
 
     def find(self, locator):
-        return self.wait.until(lambda _: self.root.find_element(*locator))
+        logger.debug("Find element inside component | locator=%s", locator)
+        with allure.step(f"Найти элемент внутри компонента: {locator}"):
+            return self.wait.until(lambda _: self.root.find_element(*locator))
 
     def find_all(self, locator):
-        return self.wait.until(lambda _: self.root.find_elements(*locator))
+        logger.debug("Find elements inside component | locator=%s", locator)
+        with allure.step(f"Найти элементы внутри компонента: {locator}"):
+            return self.wait.until(lambda _: self.root.find_elements(*locator))
 
     def click(self, locator: tuple[str, str]):
-        self.find(locator).click()
+        logger.info("Click component element | locator=%s", locator)
+        with allure.step(f"Кликнуть по элементу внутри компонента: {locator}"):
+            self.find(locator).click()
 
     def hover(self):
-        self.wait.until(lambda _: self.root.is_displayed())
-        ActionChains(self.driver).move_to_element(self.root).perform()
+        logger.info("Hover component | %s", self.__class__.__name__)
+        with allure.step(f"Навести курсор на компонент: {self.__class__.__name__}"):
+            self.wait.until(lambda _: self.root.is_displayed())
+            ActionChains(self.driver).move_to_element(self.root).perform()
 
     def is_displayed(self, timeout: int = 10) -> bool:
+        logger.debug("Check component visibility | %s", self.__class__.__name__)
+        with allure.step(f"Проверить видимость компонента: {self.__class__.__name__}"):
+            return self._is_displayed(timeout)
+
+    def _is_displayed(self, timeout: int = 10) -> bool:
         try:
             WebDriverWait(self.driver, timeout).until(
                 lambda _: self.root.is_displayed()
@@ -32,6 +50,11 @@ class BaseComponent:
             return False
 
     def is_visible(self, locator: tuple[str, str], timeout: int = 10) -> bool:
+        logger.debug("Check component element visibility | locator=%s", locator)
+        with allure.step(f"Проверить видимость элемента внутри компонента: {locator}"):
+            return self._is_visible(locator, timeout)
+
+    def _is_visible(self, locator: tuple[str, str], timeout: int = 10) -> bool:
         try:
             self.wait.until(lambda _: self.find(locator).is_displayed())
             return True

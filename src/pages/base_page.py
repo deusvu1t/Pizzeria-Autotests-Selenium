@@ -1,3 +1,4 @@
+import allure
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -7,6 +8,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from src.config.settings import Settings
 from src.pages.components.header_component import HeaderComponent
+from src.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 class BasePage:
@@ -23,22 +27,37 @@ class BasePage:
 
     @property
     def title(self):
-        return self.driver.title
+        title = self.driver.title
+        logger.debug("Page title | %s", title)
+        return title
 
     def open(self, part=""):
         url = self.URL + part
-        self.driver.get(url)
+        logger.info("Opening page | url=%s", url)
+        with allure.step(f"Открыть страницу: {url}"):
+            self.driver.get(url)
 
     def find(self, locator: tuple[str, str]) -> WebElement:
-        return self.wait.until(EC.visibility_of_element_located(locator))
+        logger.debug("Find visible element on page | locator=%s", locator)
+        with allure.step(f"Найти видимый элемент на странице: {locator}"):
+            return self.wait.until(EC.visibility_of_element_located(locator))
 
     def find_all(self, locator: tuple[str, str]) -> list[WebElement]:
-        return self.wait.until(EC.visibility_of_all_elements_located(locator))
+        logger.debug("Find visible elements on page | locator=%s", locator)
+        with allure.step(f"Найти видимые элементы на странице: {locator}"):
+            return self.wait.until(EC.visibility_of_all_elements_located(locator))
 
     def click(self, locator: tuple[str, str]):
-        self.wait.until(EC.element_to_be_clickable(locator)).click()
+        logger.info("Click page element | locator=%s", locator)
+        with allure.step(f"Кликнуть по элементу на странице: {locator}"):
+            self.wait.until(EC.element_to_be_clickable(locator)).click()
 
     def is_visible(self, locator: tuple[str, str], timeout: int = 10) -> bool:
+        logger.debug("Check page element visibility | locator=%s", locator)
+        with allure.step(f"Проверить видимость элемента на странице: {locator}"):
+            return self._is_visible(locator, timeout)
+
+    def _is_visible(self, locator: tuple[str, str], timeout: int = 10) -> bool:
         try:
             WebDriverWait(self.driver, timeout).until(
                 EC.visibility_of_element_located(locator)

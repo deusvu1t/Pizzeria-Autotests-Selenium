@@ -1,6 +1,10 @@
+import allure
 from selenium.webdriver.common.by import By
 
 from src.pages.components.base_component import BaseComponent
+from src.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 class SlideComponent(BaseComponent):
@@ -11,13 +15,25 @@ class SlideComponent(BaseComponent):
 
     @property
     def title(self) -> str:
-        return self.wait.until(lambda _: self.find(self.TITLE).text.strip())
+        with allure.step("Получить название пиццы на слайде"):
+            title = self.wait.until(lambda _: self.find(self.TITLE).text.strip())
+            logger.info("Slide title | %s", title)
+            return title
 
     @property
     def price(self) -> str:
-        return self.wait.until(lambda _: self.find(self.PRICE).text.strip())
+        with allure.step("Получить цену пиццы на слайде"):
+            price = self.wait.until(lambda _: self.find(self.PRICE).text.strip())
+            logger.info("Slide price | %s", price)
+            return price
+
+    def is_add_to_cart_button_visible(self) -> bool:
+        self.hover()
+        return self.is_visible(self.ADD_BTN)
 
     def add_to_cart(self):
-        self.hover()
-        self.click(self.ADD_BTN)
-        self.wait.until(lambda _: self.find(self.ADDED_BTN))
+        logger.info("Add slide product to cart")
+        with allure.step("Добавить пиццу из слайда в корзину"):
+            self.hover()
+            self.click(self.ADD_BTN)
+            self.wait.until(lambda _: self.find(self.ADDED_BTN))

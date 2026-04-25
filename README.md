@@ -18,9 +18,13 @@ https://pizzeria.skillbox.cc/
 
 ```text
 .
-├── core/                 # Конфигурация, фабрика драйверов, утилиты
-├── pages/                # Page Object классы и переиспользуемые компоненты страниц
+├── src/                  # Исходный код тестового фреймворка
+├── src/browser/          # Фабрика драйверов и browser options
+├── src/pages/            # Page Object классы
+├── src/pages/components/ # Переиспользуемые компоненты страниц
+├── src/fixtures/         # Pytest-фикстуры
 ├── tests/                # Тестовые сценарии и pytest-фикстуры
+├── docs/                 # Тест-кейсы и проектная документация
 ├── pytest.ini            # Конфигурация pytest
 └── requirements.txt      # Зависимости проекта
 ```
@@ -29,9 +33,9 @@ https://pizzeria.skillbox.cc/
 
 - Реализована базовая фабрика Selenium-драйвера.
 - Поддержан локальный запуск браузеров Chrome и Firefox.
-- В конфигурации заложена возможность запуска через Selenoid.
 - Pytest-фикстуры подготавливают новый браузер для каждого теста.
-- Первый smoke-тест пока открывает Google как временный пример.
+- Добавлены базовые Page Object и Component Object классы.
+- Подключены логи и Allure-отчёты.
 
 ## Установка
 
@@ -76,33 +80,36 @@ pytest --browser firefox
 pytest --headless
 ```
 
-Запуск через Selenoid:
+После запуска тестов логи сохраняются в:
+
+- `reports/logs/test_run.log`
+
+Allure results сохраняются в:
+
+- `reports/allure-results`
+
+Открыть Allure-отчёт:
 
 ```bash
-pytest --run-mode selenoid
+allure serve reports/allure-results
 ```
 
 ## Конфигурация
 
-Настройки по умолчанию находятся в `core/config/settings.py`.
+Настройки по умолчанию находятся в `src/config/settings.py`.
 
-Проект поддерживает переопределение настроек через `.env` файл и CLI-опции pytest.
+Проект поддерживает переопределение браузера и headless-режима через CLI-опции pytest.
 
 Основные настройки:
 
 - `browser`: `chrome` или `firefox`
-- `run_mode`: `local` или `selenoid`
 - `headless`: запуск браузера в headless-режиме
 - `base_url`: URL тестируемого сайта
-- `selenoid_url`: URL удалённого WebDriver
-- `timeout`: implicit wait
-- `page_load_timeout`: таймаут загрузки страницы
 
 ## Roadmap
 
 - Заменить временный smoke-тест на реальные сценарии сайта пиццерии.
 - Добавить Page Object методы для главной страницы, страницы товара и корзины.
 - Покрыть поиск товара, добавление в корзину, изменение корзины и оформление заказа.
-- Добавить инструкцию по Allure-отчётам.
 - Добавить CI workflow для автоматического запуска тестов.
 
