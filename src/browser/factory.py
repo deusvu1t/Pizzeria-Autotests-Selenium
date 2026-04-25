@@ -16,9 +16,19 @@ logger = get_logger(__name__)
 
 
 def create_driver(settings: Settings) -> WebDriver:
-    if settings.run_mode == "selenoid":
-        return _create_remote(settings)
-    return _create_local(settings)
+    logger.debug(
+        "Creating driver | browser=%s | mode=%s",
+        settings.browser,
+        settings.run_mode,
+    )
+
+    if settings.run_mode == "remote":
+        driver = _create_remote(settings)
+    else:
+        driver = _create_local(settings)
+
+    logger.debug("Driver created | session_id=%s", driver.session_id)
+    return driver
 
 
 def _create_local(settings: Settings):
