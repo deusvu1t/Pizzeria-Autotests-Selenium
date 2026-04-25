@@ -14,17 +14,15 @@ logger = get_logger(__name__)
 def driver(request: pytest.FixtureRequest) -> Generator[WebDriver, None, None]:
     settings = Settings(
         browser=request.config.getoption("--browser"),
-        run_mode=request.config.getoption("--run-mode"),
         headless=request.config.getoption("--headless"),
     )
 
     test_name = request.node.nodeid
 
     logger.info(
-        "START TEST | %s | browser=%s | mode=%s | headless=%s",
+        "START TEST | %s | browser=%s | headless=%s",
         test_name,
         settings.browser,
-        settings.run_mode,
         settings.headless,
     )
 

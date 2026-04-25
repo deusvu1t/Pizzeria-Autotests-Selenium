@@ -9,7 +9,6 @@ def pytest_configure(config):
 
 def pytest_addoption(parser):
     parser.addoption("--browser", default="chrome")
-    parser.addoption("--run-mode", default="local")
     parser.addoption("--headless", action="store_true", default=False)
 
 
