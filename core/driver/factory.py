@@ -10,15 +10,29 @@ from core.driver.options import (
     get_chrome_options,
     get_firefox_options,
 )
+from core.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 def create_driver(settings: Settings) -> WebDriver:
-    if settings.run_mode == RunMode.SELENOID:
-        return _create_remote(settings)
-    return _create_local(settings)
+    logger.info(
+        "Creating driver | browser=%s | mode=%s | headless=%s",
+        settings.browser,
+        settings.run_mode,
+        settings.headless,
+    )
+    driver = (
+        _create_remote(settings)
+        if settings.run_mode == RunMode.SELENOID
+        else _create_local(settings)
+    )
+    logger.info("Driver created successfully | session_id=%s", driver.session_id)
+    return driver
 
 
 def _create_local(settings: Settings) -> WebDriver:
+    logger.debug("Initializing local driver | browser=%s", settings.browser)
     match settings.browser:
         case Browser.CHROME:
             return webdriver.Chrome(
@@ -35,7 +49,11 @@ def _create_local(settings: Settings) -> WebDriver:
 
 
 def _create_remote(settings: Settings) -> WebDriver:
-    """Selenoid и GitHub CI — оба используют Remote."""
+    logger.debug(
+        "Initializing remote driver | url=%s | browser=%s",
+        settings.selenoid_url,
+        settings.browser,
+    )
     options_map = {
         Browser.CHROME: get_chrome_options(settings),
         Browser.FIREFOX: get_firefox_options(settings),
@@ -44,7 +62,6 @@ def _create_remote(settings: Settings) -> WebDriver:
     if not options:
         raise ValueError(f"Unsupported browser: {settings.browser}")
 
-    # Selenoid capabilities
     options.set_capability(
         "selenoid:options",
         {
