@@ -2,4 +2,3 @@ selenium
 pytest
 allure-pytest
 webdriver-manager
-pydantic-settings
