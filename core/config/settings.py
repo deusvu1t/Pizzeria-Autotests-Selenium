@@ -6,7 +6,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Browser(StrEnum):
     CHROME = "chrome"
     FIREFOX = "firefox"
-    EDGE = "edge"
 
 
 class RunMode(StrEnum):
