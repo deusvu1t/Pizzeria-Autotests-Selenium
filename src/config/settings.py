@@ -1,6 +1,6 @@
 from enum import StrEnum
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 
 class Browser(StrEnum):
@@ -26,8 +26,6 @@ class Settings(BaseSettings):
     # Таймауты
     timeout: int = 10
     page_load_timeout: int = 30
-
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
 # Singleton — импортируй этот объект везде
