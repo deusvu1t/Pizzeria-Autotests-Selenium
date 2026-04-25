@@ -1,11 +1,11 @@
 # Pizzeria Autotests Selenium
 
-Pet-project for UI autotests of the Skillbox pizzeria website:
+Пет-проект с UI-автотестами для сайта пиццерии Skillbox:
 https://pizzeria.skillbox.cc/
 
-The project is at an early stage and will be updated as the test suite grows.
+Проект находится на ранней стадии разработки и будет постепенно обновляться по мере добавления новых тестов, страниц и инфраструктуры.
 
-## Tech Stack
+## Стек
 
 - Python
 - Pytest
@@ -14,94 +14,95 @@ The project is at an early stage and will be updated as the test suite grows.
 - Allure Pytest
 - Pydantic Settings
 
-## Project Structure
+## Структура проекта
 
 ```text
 .
-├── core/                 # Configuration, driver factory, utilities
-├── pages/                # Page Object classes and reusable page components
-├── tests/                # Test scenarios and pytest fixtures
-├── pytest.ini            # Pytest configuration
-└── requirements.txt      # Project dependencies
+├── core/                 # Конфигурация, фабрика драйверов, утилиты
+├── pages/                # Page Object классы и переиспользуемые компоненты страниц
+├── tests/                # Тестовые сценарии и pytest-фикстуры
+├── pytest.ini            # Конфигурация pytest
+└── requirements.txt      # Зависимости проекта
 ```
 
-## Current Status
+## Текущее состояние
 
-- Basic Selenium driver factory is implemented.
-- Local browser launch is supported for Chrome and Firefox.
-- Remote launch through Selenoid is planned in the configuration.
-- Pytest fixtures prepare a fresh browser instance for every test.
-- The first smoke test opens Google as a temporary example.
+- Реализована базовая фабрика Selenium-драйвера.
+- Поддержан локальный запуск браузеров Chrome и Firefox.
+- В конфигурации заложена возможность запуска через Selenoid.
+- Pytest-фикстуры подготавливают новый браузер для каждого теста.
+- Первый smoke-тест пока открывает Google как временный пример.
 
-## Installation
+## Установка
 
-Clone the repository:
+Склонировать репозиторий:
 
 ```bash
 git clone https://github.com/deusvu1t/Pizzeria-Autotests-Selenium.git
 cd Pizzeria-Autotests-Selenium
 ```
 
-Create and activate a virtual environment:
+Создать и активировать виртуальное окружение:
 
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
 ```
 
-Install dependencies:
+Установить зависимости:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Running Tests
+## Запуск тестов
 
-Run tests with the default settings:
+Запуск тестов с настройками по умолчанию:
 
 ```bash
 pytest
 ```
 
-Run tests in a specific browser:
+Запуск в конкретном браузере:
 
 ```bash
 pytest --browser chrome
 pytest --browser firefox
 ```
 
-Run tests in headless mode:
+Запуск в headless-режиме:
 
 ```bash
 pytest --headless
 ```
 
-Run tests with Selenoid:
+Запуск через Selenoid:
 
 ```bash
 pytest --run-mode selenoid
 ```
 
-## Configuration
+## Конфигурация
 
-Default settings are stored in `core/config/settings.py`.
+Настройки по умолчанию находятся в `core/config/settings.py`.
 
-The project supports overriding settings with a `.env` file and pytest CLI options.
+Проект поддерживает переопределение настроек через `.env` файл и CLI-опции pytest.
 
-Main settings:
+Основные настройки:
 
-- `browser`: `chrome` or `firefox`
-- `run_mode`: `local` or `selenoid`
-- `headless`: browser headless mode
-- `base_url`: tested website URL
-- `selenoid_url`: remote WebDriver URL
-- `timeout`: implicit wait timeout
-- `page_load_timeout`: page load timeout
+- `browser`: `chrome` или `firefox`
+- `run_mode`: `local` или `selenoid`
+- `headless`: запуск браузера в headless-режиме
+- `base_url`: URL тестируемого сайта
+- `selenoid_url`: URL удалённого WebDriver
+- `timeout`: implicit wait
+- `page_load_timeout`: таймаут загрузки страницы
 
 ## Roadmap
 
-- Replace the temporary smoke test with real pizzeria scenarios.
-- Add Page Object methods for the main page, product page, and cart.
-- Cover product search, add-to-cart flow, cart changes, and checkout.
-- Add Allure reporting instructions.
-- Add CI workflow for automated test runs.
+- Заменить временный smoke-тест на реальные сценарии сайта пиццерии.
+- Добавить Page Object методы для главной страницы, страницы товара и корзины.
+- Покрыть поиск товара, добавление в корзину, изменение корзины и оформление заказа.
+- Добавить инструкцию по Allure-отчётам.
+- Добавить CI workflow для автоматического запуска тестов.
+
