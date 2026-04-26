@@ -1,6 +1,7 @@
 import allure
 
 from src.pages.main_page import MainPage
+from src.pages.product_page import ProductPage
 
 
 @allure.feature("Главная страница")
@@ -27,7 +28,7 @@ class TestMainPage:
 
         with allure.step("Проверить отображение названия и цены у каждого слайда"):
             for slide in slides:
-                assert slide.name
+                assert slide.title
                 assert slide.price > 0
 
     @allure.story("Слайдер с пиццами")
@@ -81,17 +82,17 @@ class TestMainPage:
             main_page.open()
 
         slider = main_page.pizza_slider()
-        first_names = slider.slide_names()
+        first_titles = slider.slide_titles()
 
         with allure.step("Переключить слайдер вправо"):
             slider.next()
-            second_names = slider.slide_names()
-            assert first_names != second_names
+            second_titles = slider.slide_titles()
+            assert first_titles != second_titles
 
         with allure.step("Переключить слайдер влево"):
             slider.prev()
-            third_names = slider.slide_names()
-            assert second_names != third_names
+            third_titles = slider.slide_titles()
+            assert second_titles != third_titles
 
     @allure.story("Слайдер с пиццами")
     @allure.title("Можно добавить пиццу после переключения слайдера")
@@ -112,24 +113,18 @@ class TestMainPage:
 
     @allure.story("Слайдер с пиццами")
     @allure.title("Можно открыть страницу подробностей выбранной пиццы")
-    def test_can_open_pizza_details_page(self, main_page: MainPage):
+    def test_can_open_pizza_details_page(
+        self, main_page: MainPage, product_page: ProductPage
+    ):
         with allure.step("Открыть главную страницу"):
             main_page.open()
 
-        slider = main_page.pizza_slider()
-        slides = slider.slides()
-        assert len(slides) == self.EXPECTED_VISIBLE_SLIDES_COUNT
-        slide = slides[-1]
-        pizza_name = slide.name
+        slide = main_page.pizza_slider().slides()[0]
+        slide_titles = slide.title
+        slide_price = slide.price
 
         slide.go_to_details_page()
 
         with allure.step("Проверить, что открылась страница выбранной пиццы"):
-            assert pizza_name in main_page.title.lower()
-
-    def test_test(self, main_page: MainPage):
-        main_page.open()
-        slider = main_page.pizza_slider()
-        slider.next()
-        slider.prev()
-        pass
+            assert slide_titles == product_page.title
+            assert slide_price == product_page.price
