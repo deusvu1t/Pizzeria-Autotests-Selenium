@@ -1,6 +1,7 @@
 import allure
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from src.utils.logger import get_logger
@@ -14,20 +15,27 @@ class BaseComponent:
         self.root = root
         self.wait = WebDriverWait(driver, timeout)
 
+    def _find_raw(self, locator):
+        return self.root.find_element(*locator)
+
+    def _find_all_raw(self, locator):
+        return self.root.find_elements(*locator)
+
     def find(self, locator):
         logger.debug("Find element inside component | locator=%s", locator)
         with allure.step(f"Найти элемент внутри компонента: {locator}"):
-            return self.wait.until(lambda _: self.root.find_element(*locator))
+            return self.wait.until(lambda _: self._find_raw(locator))
 
     def find_all(self, locator):
         logger.debug("Find elements inside component | locator=%s", locator)
         with allure.step(f"Найти элементы внутри компонента: {locator}"):
-            return self.wait.until(lambda _: self.root.find_elements(*locator))
+            return self.wait.until(lambda _: self._find_all_raw(locator))
 
     def click(self, locator: tuple[str, str]):
         logger.info("Click component element | locator=%s", locator)
         with allure.step(f"Кликнуть по элементу внутри компонента: {locator}"):
-            self.find(locator).click()
+            element = self.wait.until(lambda _: self._find_raw(locator))
+            self.wait.until(EC.element_to_be_clickable(element)).click()
 
     def hover(self):
         logger.info("Hover component | %s", self.__class__.__name__)

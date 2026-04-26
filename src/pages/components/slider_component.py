@@ -10,6 +10,8 @@ logger = get_logger(__name__)
 
 class SliderComponent(BaseComponent):
     SLIDES = (By.CSS_SELECTOR, "li[aria-hidden='false']")
+    PREV = (By.CLASS_NAME, "slick-prev")
+    NEXT = (By.CLASS_NAME, "slick-next")
 
     def slides(self) -> list[SlideComponent]:
         logger.info("Get visible slider slides")
@@ -25,3 +27,15 @@ class SliderComponent(BaseComponent):
                 attachment_type=allure.attachment_type.TEXT,
             )
             return slides
+
+    def prev(self):
+        logger.info("Switch slider to previous slides")
+        with allure.step("Переключить слайдер влево"):
+            self.slides()[0].hover()
+            self.click(self.PREV)
+
+    def next(self):
+        logger.info("Switch slider to next slides")
+        with allure.step("Переключить слайдер вправо"):
+            self.slides()[-1].hover()
+            self.click(self.NEXT)

@@ -49,16 +49,19 @@ def pytest_runtest_makereport(item, call):
 
     driver = item.funcargs.get("driver")
     if driver is not None:
-        allure.attach(
-            driver.get_screenshot_as_png(),
-            name="failure_screenshot",
-            attachment_type=allure.attachment_type.PNG,
-        )
-        allure.attach(
-            driver.page_source,
-            name="failure_page_source",
-            attachment_type=allure.attachment_type.HTML,
-        )
+        try:
+            allure.attach(
+                driver.get_screenshot_as_png(),
+                name="failure_screenshot",
+                attachment_type=allure.attachment_type.PNG,
+            )
+            allure.attach(
+                driver.page_source,
+                name="failure_page_source",
+                attachment_type=allure.attachment_type.HTML,
+            )
+        except Exception:
+            logger.exception("Failed to attach browser state to Allure")
 
     if LOG_FILE.exists():
         allure.attach.file(
