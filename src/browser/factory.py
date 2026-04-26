@@ -25,6 +25,7 @@ def create_driver(settings: Settings) -> WebDriver:
             service=FirefoxService(GeckoDriverManager().install()),
             options=get_firefox_options(settings),
         )
+        driver.set_window_size(1920, 1080)
     else:
         raise ValueError(f"Unsupported browser: {settings.browser}")
 

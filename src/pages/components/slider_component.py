@@ -10,6 +10,7 @@ logger = get_logger(__name__)
 
 class SliderComponent(BaseComponent):
     SLIDES = (By.CSS_SELECTOR, "li[aria-hidden='false']")
+    TRACK = (By.CLASS_NAME, "slick-track")
     PREV = (By.CLASS_NAME, "slick-prev")
     NEXT = (By.CLASS_NAME, "slick-next")
 
@@ -31,18 +32,31 @@ class SliderComponent(BaseComponent):
     def slide_titles(self) -> list[str]:
         return [slide.title for slide in self.slides()]
 
+    def _wait_until_animation_finished(self):
+        self.wait.until(
+            lambda _: (
+                "slick-animating" not in self.find(self.TRACK).get_attribute("class")
+            )
+        )
+
     def next(self):
         before = self.slide_titles()
 
         with allure.step("Переключить слайдер вправо"):
+            self._wait_until_animation_finished()
             self.slides()[-1].hover()
+            self.wait.until(lambda _: self.find(self.NEXT).is_displayed())
             self.click(self.NEXT)
             self.wait.until(lambda _: self.slide_titles() != before)
+            self._wait_until_animation_finished()
 
     def prev(self):
         before = self.slide_titles()
 
         with allure.step("Переключить слайдер влево"):
+            self._wait_until_animation_finished()
             self.slides()[0].hover()
+            self.wait.until(lambda _: self.find(self.PREV).is_displayed())
             self.click(self.PREV)
             self.wait.until(lambda _: self.slide_titles() != before)
+            self._wait_until_animation_finished()
