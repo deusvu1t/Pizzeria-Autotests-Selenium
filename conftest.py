@@ -4,10 +4,15 @@ import allure
 import pytest
 
 from src.config.settings import Settings
-from src.utils.logger import get_logger, setup_logging
-from src.utils.logger import LOG_FILE
+from src.utils.logger import LOG_FILE, get_logger, setup_logging
 
 logger = get_logger(__name__)
+
+
+pytest_plugins: list[str] = [
+    "src.fixtures.driver",
+    "src.fixtures.pages",
+]
 
 
 def pytest_configure(config):
@@ -69,9 +74,3 @@ def pytest_runtest_makereport(item, call):
             name="test_run_log",
             attachment_type=allure.attachment_type.TEXT,
         )
-
-
-pytest_plugins: list[str] = [
-    "src.fixtures.driver",
-    "src.fixtures.pages",
-]

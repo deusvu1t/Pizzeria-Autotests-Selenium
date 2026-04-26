@@ -1,5 +1,4 @@
 import allure
-import pytest
 
 from src.pages.main_page import MainPage
 
@@ -56,9 +55,7 @@ class TestMainPage:
             pizza.add_to_cart()
 
         with allure.step("Сравнить цену товаров в корзине с ценой пиццы"):
-            assert main_page.header.wait_until_cart_total(pizza_price) == pytest.approx(
-                pizza_price
-            )
+            assert main_page.header.cart_total == pizza_price
 
     @allure.story("Слайдер с пиццами")
     @allure.title("Добавление нескольких пицц из слайдера в корзину")
@@ -75,7 +72,7 @@ class TestMainPage:
             slide.add_to_cart()
 
         with allure.step("Проверить сумму корзины"):
-            assert main_page.header.wait_until_cart_total(total) == pytest.approx(total)
+            assert main_page.header.cart_total == total
 
     @allure.story("Слайдер с пиццами")
     @allure.title("Слайдер переключается вправо и влево")
@@ -84,16 +81,16 @@ class TestMainPage:
             main_page.open()
 
         slider = main_page.pizza_slider()
-        first_names = [slide.name for slide in slider.slides()]
+        first_names = slider.slide_names()
 
         with allure.step("Переключить слайдер вправо"):
             slider.next()
-            second_names = [slide.name for slide in slider.slides()]
+            second_names = slider.slide_names()
             assert first_names != second_names
 
         with allure.step("Переключить слайдер влево"):
             slider.prev()
-            third_names = [slide.name for slide in slider.slides()]
+            third_names = slider.slide_names()
             assert second_names != third_names
 
     @allure.story("Слайдер с пиццами")
@@ -111,9 +108,7 @@ class TestMainPage:
             pizza.add_to_cart()
 
         with allure.step("Проверить сумму корзины"):
-            assert main_page.header.wait_until_cart_total(pizza_price) == pytest.approx(
-                pizza_price
-            )
+            assert main_page.header.cart_total == pizza_price
 
     @allure.story("Слайдер с пиццами")
     @allure.title("Можно открыть страницу подробностей выбранной пиццы")
@@ -131,3 +126,10 @@ class TestMainPage:
 
         with allure.step("Проверить, что открылась страница выбранной пиццы"):
             assert pizza_name in main_page.title.lower()
+
+    def test_test(self, main_page: MainPage):
+        main_page.open()
+        slider = main_page.pizza_slider()
+        slider.next()
+        slider.prev()
+        pass

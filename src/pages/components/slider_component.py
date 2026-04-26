@@ -28,14 +28,21 @@ class SliderComponent(BaseComponent):
             )
             return slides
 
-    def prev(self):
-        logger.info("Switch slider to previous slides")
-        with allure.step("Переключить слайдер влево"):
-            self.slides()[0].hover()
-            self.click(self.PREV)
+    def slide_names(self) -> list[str]:
+        return [slide.name for slide in self.slides()]
 
     def next(self):
-        logger.info("Switch slider to next slides")
+        before = self.slide_names()
+
         with allure.step("Переключить слайдер вправо"):
             self.slides()[-1].hover()
             self.click(self.NEXT)
+            self.wait.until(lambda _: self.slide_names() != before)
+
+    def prev(self):
+        before = self.slide_names()
+
+        with allure.step("Переключить слайдер влево"):
+            self.slides()[0].hover()
+            self.click(self.PREV)
+            self.wait.until(lambda _: self.slide_names() != before)
