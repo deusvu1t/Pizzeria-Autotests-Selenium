@@ -39,19 +39,22 @@ class ProductPage(BasePage):
         return Select(select_element).first_selected_option.text
 
     @property
-    def active_board_pack_value(self) -> str | None:
-        select_element = self.find(self.BOARD_PACK)
-        # Возвращает текст выбранного option
-        return Select(select_element).first_selected_option.get_attribute("value")
+    def active_board_pack_value(self) -> str:
+        with allure.step("Получить value активного борта"):
+            val = Select(
+                self.find(self.BOARD_PACK)
+            ).first_selected_option.get_attribute("value")
+            return val if val else ""
 
+    @allure.step("Выбрать борт пиццы: {name}")
     def board_pack(self, name: str):
-        select_element = self.find(self.BOARD_PACK)
-        select = Select(select_element)
-
+        logger.info("Selecting board pack: %s", name)
+        select = Select(self.find(self.BOARD_PACK))
         for option in select.options:
             if name in option.text:
                 select.select_by_visible_text(option.text)
-                break
+                return
+        raise ValueError(f"Option with text '{name}' not found")
 
     def add_to_cart(self):
         self.click(self.ADD_BTN)

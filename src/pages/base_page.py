@@ -25,37 +25,27 @@ class BasePage:
     def header(self) -> HeaderComponent:
         return HeaderComponent(self.driver, self.find(self.HEADER))
 
-    @property
-    def title(self):
-        title = self.driver.title
-        logger.debug("Page title | %s", title)
-        return title
-
+    @allure.step("Открыть страницу: {part}")
     def open(self, part=""):
         url = self.URL + part
         logger.info("Opening page | url=%s", url)
-        with allure.step(f"Открыть страницу: {url}"):
-            self.driver.get(url)
+        self.driver.get(url)
 
     def find(self, locator: tuple[str, str]) -> WebElement:
         logger.debug("Find visible element on page | locator=%s", locator)
-        with allure.step(f"Найти видимый элемент на странице: {locator}"):
-            return self.wait.until(EC.visibility_of_element_located(locator))
+        return self.wait.until(EC.visibility_of_element_located(locator))
 
     def find_all(self, locator: tuple[str, str]) -> list[WebElement]:
         logger.debug("Find visible elements on page | locator=%s", locator)
-        with allure.step(f"Найти видимые элементы на странице: {locator}"):
-            return self.wait.until(EC.visibility_of_all_elements_located(locator))
+        return self.wait.until(EC.visibility_of_all_elements_located(locator))
 
     def click(self, locator: tuple[str, str]):
         logger.info("Click page element | locator=%s", locator)
-        with allure.step(f"Кликнуть по элементу на странице: {locator}"):
-            self.wait.until(EC.element_to_be_clickable(locator)).click()
+        self.wait.until(EC.element_to_be_clickable(locator)).click()
 
     def is_visible(self, locator: tuple[str, str], timeout: int = 10) -> bool:
         logger.debug("Check page element visibility | locator=%s", locator)
-        with allure.step(f"Проверить видимость элемента на странице: {locator}"):
-            return self._is_visible(locator, timeout)
+        return self._is_visible(locator, timeout)
 
     def _is_visible(self, locator: tuple[str, str], timeout: int = 10) -> bool:
         try:

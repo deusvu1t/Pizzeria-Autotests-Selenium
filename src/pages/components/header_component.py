@@ -1,4 +1,3 @@
-import allure
 from selenium.webdriver.common.by import By
 
 from src.pages.components.base_component import BaseComponent
@@ -13,7 +12,6 @@ class HeaderComponent(BaseComponent):
 
     @property
     def cart_total(self) -> float:
-        with allure.step("Получить текст корзины в хедере"):
-            total = self.find(self.CART_CONTENTS).text
-            logger.info("Header cart total | %s", total)
-            return parse_price(total)
+        total_text = self.find(self.CART_CONTENTS).text
+        logger.info("Cart total in header: %s", total_text)
+        return parse_price(total_text)

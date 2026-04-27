@@ -25,24 +25,20 @@ class SliderComponent(BaseComponent):
             lambda _: "slick-animating" in self.find(self.TRACK).get_attribute("class")
         )
 
-    def _move_slider(self, direction_locator, target_slide_index: int):
-
+    def _move_slider(self, direction_locator, target_index: int):
         before_titles = self.slide_titles()
-
         self._wait_until_animation_finished()
 
-        self.slides()[target_slide_index].hover()
-
+        self.slides()[target_index].hover()
         self.click(direction_locator)
 
         self.wait.until(lambda _: self.slide_titles() != before_titles)
-
         self._wait_until_animation_finished()
 
+    @allure.step("Пролистать слайдер вправо")
     def next(self):
-        with allure.step("Переключить слайдер вправо"):
-            self._move_slider(self.NEXT, target_slide_index=-1)
+        self._move_slider(self.NEXT, target_index=-1)
 
+    @allure.step("Пролистать слайдер влево")
     def prev(self):
-        with allure.step("Переключить слайдер влево"):
-            self._move_slider(self.PREV, target_slide_index=0)
+        self._move_slider(self.PREV, target_index=0)

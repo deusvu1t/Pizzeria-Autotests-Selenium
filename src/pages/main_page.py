@@ -11,7 +11,6 @@ logger = get_logger(__name__)
 class MainPage(BasePage):
     PIZZA_SLIDER = (By.ID, "product1")
 
+    @allure.step("Получить слайдер с пиццами")
     def pizza_slider(self) -> SliderComponent:
-        logger.info("Get pizza slider")
-        with allure.step("Получить слайдер с пиццами"):
-            return SliderComponent(self.driver, self.find(self.PIZZA_SLIDER))
+        return SliderComponent(self.driver, self.find(self.PIZZA_SLIDER))

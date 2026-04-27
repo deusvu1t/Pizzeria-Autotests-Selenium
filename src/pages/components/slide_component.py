@@ -17,30 +17,29 @@ class SlideComponent(BaseComponent):
 
     @property
     def title(self) -> str:
-        with allure.step("Получить название продукта на слайде"):
-            title = self.wait.until(lambda _: self.find(self.TITLE).text.strip())
-            logger.info("Product name | %s", title)
-            return normalize_text(title)
+        self.wait.until(lambda _: self.find(self.TITLE).text.strip() != "")
+        text = self.find(self.TITLE).text.strip()
+        logger.info("Slide product title: %s", text)
+        return normalize_text(text)
 
     @property
     def price(self) -> float:
-        with allure.step("Получить цену продукта на слайде"):
-            price = self.wait.until(lambda _: self.find(self.PRICE).text.strip())
-            logger.info("Product price | %s", price)
-            return parse_price(price)
+        # Ждем появления цифр цены
+        self.wait.until(lambda _: self.find(self.PRICE).text.strip() != "")
+        text = self.find(self.PRICE).text.strip()
+        logger.info("Slide product price: %s", text)
+        return parse_price(text)
 
     def is_add_to_cart_button_visible(self) -> bool:
         self.hover()
         return self.is_visible(self.ADD_BTN)
 
+    @allure.step("Добавить продукт в корзину со слайда")
     def add_to_cart(self):
-        logger.info("Add slide product to cart")
-        with allure.step("Добавить продукт из слайда в корзину"):
-            self.hover()
-            self.click(self.ADD_BTN)
-            self.wait.until(lambda _: self.find(self.ADDED_BTN))
+        self.hover()
+        self.click(self.ADD_BTN)
+        self.wait.until(lambda _: self.is_visible(self.ADDED_BTN))
 
+    @allure.step("Перейти в карточку товара")
     def go_to_details_page(self):
-        logger.info("Open slide product details page")
-        with allure.step("Открыть страницу подробностей продукта из слайда"):
-            self.click(self.IMG)
+        self.click(self.IMG)
