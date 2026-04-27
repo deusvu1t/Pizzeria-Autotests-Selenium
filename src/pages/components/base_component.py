@@ -26,8 +26,19 @@ class BaseComponent:
     def click(self, locator: tuple[str, str]):
         logger.info("Click | locator=%s", locator)
         with allure.step(f"Кликнуть по элементу: {locator}"):
-            element = self.wait.until(lambda _: self.find(locator))
-            self.wait.until(EC.element_to_be_clickable(element)).click()
+            # Re-fetch element inside the lambda to avoid StaleElementReferenceException
+            # if the root or element goes stale while waiting for it to be clickable
+            def _find_and_check_clickable(driver):
+                try:
+                    el = self.root.find_element(*locator)
+                    if el.is_displayed() and el.is_enabled():
+                        return el
+                except Exception:
+                    pass
+                return False
+
+            element = self.wait.until(_find_and_check_clickable)
+            element.click()
 
     def hover(self):
         logger.info("Hover | %s", self.__class__.__name__)
