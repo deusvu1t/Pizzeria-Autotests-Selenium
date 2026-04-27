@@ -24,11 +24,13 @@ class TestProductPage:
         self, product_page: ProductPage, cart_page: CartPage
     ):
         pizza_variation = "Сырный"
+        pizza_name = 'пицца "4 в 1"'
         product_page.open("пицца-4-в-1")
         product_page.board_pack(pizza_variation)
         pizza_price = product_page.price
         product_page.add_to_cart()
         product_page.header.go_to_cart()
         item = cart_page.items()[0]
+        assert pizza_name == item.name
         assert pizza_price == item.price
         assert pizza_variation in item.variation
