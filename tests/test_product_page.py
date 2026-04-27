@@ -23,6 +23,6 @@ class TestProductPage:
         product_page.open("пицца-4-в-1")
         product_page.board_pack("Сырный")
         pizza_price = product_page.price
-
+        product_page.add_to_cart()
         product_page.header.go_to_cart()
         pass

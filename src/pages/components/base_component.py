@@ -1,7 +1,6 @@
 import allure
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from src.utils.logger import get_logger
@@ -26,8 +25,19 @@ class BaseComponent:
     def click(self, locator: tuple[str, str]):
         logger.info("Click | locator=%s", locator)
         with allure.step(f"Кликнуть по элементу: {locator}"):
-            element = self.wait.until(lambda _: self.find(locator))
-            self.wait.until(EC.element_to_be_clickable(element)).click()
+            # Re-fetch element inside the lambda to avoid StaleElementReferenceException
+            # if the root or element goes stale while waiting for it to be clickable
+            def _find_check_and_click(driver):
+                try:
+                    el = self.root.find_element(*locator)
+                    if el.is_displayed() and el.is_enabled():
+                        el.click()
+                        return True
+                except Exception:
+                    pass
+                return False
+
+            self.wait.until(_find_check_and_click)
 
     def hover(self):
         logger.info("Hover | %s", self.__class__.__name__)
