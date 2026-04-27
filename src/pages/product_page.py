@@ -1,5 +1,6 @@
 import allure
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
 
 from src.pages.base_page import BasePage
 from src.utils.helpers import normalize_text, parse_price
@@ -11,6 +12,11 @@ logger = get_logger(__name__)
 class ProductPage(BasePage):
     TITLE = (By.CLASS_NAME, "product_title")
     PRICE = (By.CSS_SELECTOR, ".summary bdi")
+    BOARD_PACK = (By.NAME, "board_pack")
+    ADD_BTN = (By.CSS_SELECTOR, ".summary .button ")
+
+    def open(self, part):
+        return super().open(part)
 
     @property
     def title(self) -> str:
@@ -25,3 +31,27 @@ class ProductPage(BasePage):
             price = self.wait.until(lambda _: self.find(self.PRICE).text.strip())
             logger.info("Product price | %s", price)
             return parse_price(price)
+
+    @property
+    def active_board_pack(self) -> str:
+        select_element = self.find(self.BOARD_PACK)
+        # Возвращает текст выбранного option
+        return Select(select_element).first_selected_option.text
+
+    @property
+    def active_board_pack_value(self) -> str | None:
+        select_element = self.find(self.BOARD_PACK)
+        # Возвращает текст выбранного option
+        return Select(select_element).first_selected_option.get_attribute("value")
+
+    def board_pack(self, name: str):
+        select_element = self.find(self.BOARD_PACK)
+        select = Select(select_element)
+
+        for option in select.options:
+            if name in option.text:
+                select.select_by_visible_text(option.text)
+                break
+
+    def add_to_cart(self):
+        self.click(self.ADD_BTN)
