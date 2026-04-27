@@ -18,3 +18,11 @@ class TestProductPage:
 
         product_page.board_pack("Обычный")
         assert product_page.active_board_pack_value == ""
+
+    def test_can_add_pizza_with_extra_option_to_cart(self, product_page: ProductPage):
+        product_page.open("пицца-4-в-1")
+        product_page.board_pack("Сырный")
+        pizza_price = product_page.price
+
+        product_page.header.go_to_cart()
+        pass

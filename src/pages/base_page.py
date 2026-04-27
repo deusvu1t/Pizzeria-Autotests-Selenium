@@ -15,7 +15,7 @@ logger = get_logger(__name__)
 
 class BasePage:
     URL = Settings.base_url
-    HEADER = (By.CSS_SELECTOR, "header")
+    HEADER = (By.CLASS_NAME, "site-header")
 
     def __init__(self, driver: WebDriver, timeout=10):
         self.driver = driver
@@ -23,7 +23,8 @@ class BasePage:
 
     @property
     def header(self) -> HeaderComponent:
-        return HeaderComponent(self.driver, self.find(self.HEADER))
+        header_element = self.find(self.HEADER)
+        return HeaderComponent(self.driver, header_element)
 
     @allure.step("Открыть страницу: {part}")
     def open(self, part=""):

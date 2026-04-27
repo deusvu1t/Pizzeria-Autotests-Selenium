@@ -1,5 +1,6 @@
 import allure
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 
 from src.pages.base_page import BasePage
@@ -14,6 +15,7 @@ class ProductPage(BasePage):
     PRICE = (By.CSS_SELECTOR, ".summary bdi")
     BOARD_PACK = (By.NAME, "board_pack")
     ADD_BTN = (By.CSS_SELECTOR, ".summary .button ")
+    SUCCESS_MESSAGE = (By.CLASS_NAME, "woocommerce-message")
 
     def open(self, part):
         return super().open(part)
@@ -56,5 +58,14 @@ class ProductPage(BasePage):
                 return
         raise ValueError(f"Option with text '{name}' not found")
 
+    # src/pages/product_page.py
+
+    @allure.step("Добавить продукт в корзину")
     def add_to_cart(self):
+        logger.info("Clicking add to cart button")
         self.click(self.ADD_BTN)
+        # Ждем появления информационного сообщения
+        self.wait.until(
+            EC.visibility_of_element_located(self.SUCCESS_MESSAGE),
+            message="Сообщение об успешном добавлении товара не появилось"
+        )
