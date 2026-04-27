@@ -20,6 +20,11 @@ class CartItemComponent(BaseComponent):
     def name(self) -> str:
         self.wait.until(lambda _: self.find(self.NAME).text.strip() != "")
         return normalize_text(self.find(self.NAME).text)
+    @property
+    def variation(self):
+        text = self.find(self.VARIATION).text
+        return text
+
 
     @property
     def price(self) -> float:

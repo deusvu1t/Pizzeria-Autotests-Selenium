@@ -37,7 +37,6 @@ class ProductPage(BasePage):
     @property
     def active_board_pack(self) -> str:
         select_element = self.find(self.BOARD_PACK)
-        # Возвращает текст выбранного option
         return Select(select_element).first_selected_option.text
 
     @property
@@ -58,14 +57,11 @@ class ProductPage(BasePage):
                 return
         raise ValueError(f"Option with text '{name}' not found")
 
-    # src/pages/product_page.py
-
     @allure.step("Добавить продукт в корзину")
     def add_to_cart(self):
         logger.info("Clicking add to cart button")
         self.click(self.ADD_BTN)
-        # Ждем появления информационного сообщения
         self.wait.until(
             EC.visibility_of_element_located(self.SUCCESS_MESSAGE),
-            message="Сообщение об успешном добавлении товара не появилось"
+            message="Сообщение об успешном добавлении товара не появилось",
         )

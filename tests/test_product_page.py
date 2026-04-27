@@ -1,5 +1,6 @@
 import allure
 
+from src.pages.cart_page import CartPage
 from src.pages.product_page import ProductPage
 
 
@@ -19,10 +20,15 @@ class TestProductPage:
         product_page.board_pack("Обычный")
         assert product_page.active_board_pack_value == ""
 
-    def test_can_add_pizza_with_extra_option_to_cart(self, product_page: ProductPage):
+    def test_can_add_pizza_with_extra_option_to_cart(
+        self, product_page: ProductPage, cart_page: CartPage
+    ):
+        pizza_variation = "Сырный"
         product_page.open("пицца-4-в-1")
-        product_page.board_pack("Сырный")
+        product_page.board_pack(pizza_variation)
         pizza_price = product_page.price
         product_page.add_to_cart()
         product_page.header.go_to_cart()
-        pass
+        item = cart_page.items()[0]
+        assert pizza_price == item.price
+        assert pizza_variation in item.variation

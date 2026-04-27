@@ -19,6 +19,4 @@ class HeaderComponent(BaseComponent):
 
     @allure.step("Перейти в корзину через хедер")
     def go_to_cart(self):
-        # click() внутри заново выполнит find(), что в сочетании с
-        # динамическим header в BasePage уберет ошибку StaleElement
         self.click(self.CART_CONTENTS)
