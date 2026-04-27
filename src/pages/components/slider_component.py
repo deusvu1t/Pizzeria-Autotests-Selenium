@@ -39,24 +39,58 @@ class SliderComponent(BaseComponent):
             )
         )
 
+    # def next(self):
+    #     before = self.slide_titles()
+
+    #     with allure.step("Переключить слайдер вправо"):
+    #         self._wait_until_animation_finished()
+    #         self.slides()[-1].hover()
+    #         self.wait.until(lambda _: self.find(self.NEXT).is_displayed())
+    #         self.click(self.NEXT)
+    #         self.wait.until(lambda _: self.slide_titles() != before)
+    #         self._wait_until_animation_finished()
+
+    # def prev(self):
+    #     before = self.slide_titles()
+
+    #     with allure.step("Переключить слайдер влево"):
+    #         self._wait_until_animation_finished()
+    #         self.slides()[0].hover()
+    #         self.wait.until(lambda _: self.find(self.PREV).is_displayed())
+    #         self.click(self.PREV)
+    #         self.wait.until(lambda _: self.slide_titles() != before)
+    #         self._wait_until_animation_finished()
+    def _click_via_js(self, locator):
+        element = self.find(locator)
+        self.driver.execute_script("arguments[0].click();", element)
+
     def next(self):
+        self._wait_until_animation_finished()
         before = self.slide_titles()
 
         with allure.step("Переключить слайдер вправо"):
-            self._wait_until_animation_finished()
+            # Наводим для активации кнопок
             self.slides()[-1].hover()
+            # Ждем именно видимости кнопки
             self.wait.until(lambda _: self.find(self.NEXT).is_displayed())
-            self.click(self.NEXT)
+
+            # Используем JS клик, чтобы анимация или потеря ховера не мешали
+            self._click_via_js(self.NEXT)
+
+            # Ждем изменения контента
             self.wait.until(lambda _: self.slide_titles() != before)
             self._wait_until_animation_finished()
 
     def prev(self):
+        self._wait_until_animation_finished()
         before = self.slide_titles()
 
         with allure.step("Переключить слайдер влево"):
-            self._wait_until_animation_finished()
+            # Наводим на первый видимый слайд
             self.slides()[0].hover()
             self.wait.until(lambda _: self.find(self.PREV).is_displayed())
-            self.click(self.PREV)
+
+            self._click_via_js(self.PREV)
+
             self.wait.until(lambda _: self.slide_titles() != before)
             self._wait_until_animation_finished()
