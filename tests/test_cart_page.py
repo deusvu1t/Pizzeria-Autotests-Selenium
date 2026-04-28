@@ -49,8 +49,50 @@ class TestCartPage:
                         assert "сыр" in item.variation.lower()
             assert total == cart_page.order_total
 
-    def test_increase_item_quantity_in_cart(self):
-        pass
+    @allure.story("Количество товара")
+    @allure.title("Увеличение количества пиццы в корзине")
+    def test_increase_item_quantity_in_cart(
+        self, main_page: MainPage, cart_page: CartPage
+    ):
+        with allure.step("Подготовка: добавить товар в корзину."):
+            main_page.open()
+            slider = main_page.pizza_slider()
+            slider.slides()[0].add_to_cart()
+        with allure.step("1. Открыть корзину с товаром."):
+            cart_page.open()
 
-    def test_remove_item_with_extra_option_from_cart(self):
-        pass
+        with allure.step("2. Выбрать позицию с пиццей."):
+            items = cart_page.items()
+            target_item = items[0]
+            initial_quantity = target_item.quantity
+
+        with allure.step("3. Увеличить количество этой позиции."):
+            new_quantity = initial_quantity + 1
+            target_item.set_quantity(new_quantity)
+        with allure.step("4. Нажать кнопку 'Обновить корзину'."):
+            cart_page.update_cart()
+        with allure.step(
+            "Ожидаемый результат: количество обновлено, стоимость пересчитана."
+        ):
+            items_after = cart_page.items()
+            updated_item = items_after[0]
+            assert updated_item.quantity == new_quantity
+
+    @allure.story("Удаление товара")
+    @allure.title("Удаление пиццы из корзины")
+    def test_remove_item_with_extra_option_from_cart(
+        self, main_page: MainPage, product_page: ProductPage, cart_page: CartPage
+    ):
+        with allure.step("Подготовка: добавить товары в корзину."):
+            main_page.open()
+            main_page.pizza_slider().slides()[0].add_to_cart()
+        with allure.step("1. Открыть корзину, в которой есть пицца."):
+            cart_page.open()
+            items = cart_page.items()
+            assert len(items) >= 1
+            item = items[0]
+        with allure.step("3. Удалить эту пиццу из корзины."):
+            item.remove()
+        with allure.step("Ожидаемый результат: позиция удалена, сумма пересчитана."):
+            items_after = cart_page.items()
+            assert len(items_after) == 0

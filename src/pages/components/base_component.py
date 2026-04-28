@@ -25,8 +25,6 @@ class BaseComponent:
     def click(self, locator: tuple[str, str]):
         logger.info("Click | locator=%s", locator)
         with allure.step(f"Кликнуть по элементу: {locator}"):
-            # Re-fetch element inside the lambda to avoid StaleElementReferenceException
-            # if the root or element goes stale while waiting for it to be clickable
             def _find_check_and_click(driver):
                 try:
                     el = self.root.find_element(*locator)

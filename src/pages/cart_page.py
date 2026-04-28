@@ -38,3 +38,9 @@ class CartPage(BasePage):
     @allure.step("Перейти к оформлению заказа")
     def proceed_to_checkout(self):
         self.click(self.CHECKOUT_BTN)
+
+    @allure.step("Обновить корзину")
+    def update_cart(self):
+        btn = self.find(self.UPDATE_CART_BTN)
+        self.wait.until(lambda _: btn.is_enabled())
+        self.click(self.UPDATE_CART_BTN)
