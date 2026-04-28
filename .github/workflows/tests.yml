@@ -20,4 +20,6 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run tests
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: pytest tests/ --browser=${{ matrix.browser }} --headless
