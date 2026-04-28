@@ -1,5 +1,6 @@
 import allure
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 
 from src.pages.components.base_component import BaseComponent
 from src.utils.helpers import normalize_text, parse_price
@@ -20,11 +21,16 @@ class CartItemComponent(BaseComponent):
     def name(self) -> str:
         self.wait.until(lambda _: self.find(self.NAME).text.strip() != "")
         return normalize_text(self.find(self.NAME).text)
+
     @property
     def variation(self):
-        text = self.find(self.VARIATION).text
-        return text
-
+        try:
+            el = WebDriverWait(self.root, 2).until(
+                lambda _: self.root.find_element(*self.VARIATION)
+            )
+            return el.text
+        except Exception:
+            return ""
 
     @property
     def price(self) -> float:
@@ -39,3 +45,9 @@ class CartItemComponent(BaseComponent):
     def remove(self):
         logger.info("Removing item: %s", self.name)
         self.click(self.REMOVE_BTN)
+
+    @allure.step("Установить количество товара")
+    def set_quantity(self, quantity: int):
+        el = self.find(self.QUANTITY)
+        el.clear()
+        el.send_keys(str(quantity))
