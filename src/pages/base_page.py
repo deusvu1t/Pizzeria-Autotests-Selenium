@@ -1,3 +1,5 @@
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
 import allure
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -56,3 +58,19 @@ class BasePage:
             return True
         except TimeoutException:
             return False
+
+    @allure.step("Перейти во вкладку 'Мой аккаунт'")
+    def go_to_my_account(self):
+        locator = (By.XPATH, "//ul[@id='menu-primary-menu']//a[contains(text(), 'Мой аккаунт')]")
+        self.click(locator)
+
+    @allure.step("Открыть вкладку 'Меню'")
+    def hover_menu(self):
+        locator = (By.XPATH, "//ul[@id='menu-primary-menu']//a[text()='Меню']")
+        el = self.find(locator)
+        ActionChains(self.driver).move_to_element(el).perform()
+
+    @allure.step("Кликнуть по подменю: {name}")
+    def click_submenu(self, name: str):
+        locator = (By.XPATH, f"//ul[@id='menu-primary-menu']//ul[@class='sub-menu']//a[text()='{name}']")
+        self.click(locator)

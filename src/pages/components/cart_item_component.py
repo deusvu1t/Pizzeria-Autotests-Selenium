@@ -1,3 +1,4 @@
+from selenium.webdriver.support.ui import WebDriverWait
 import allure
 from selenium.webdriver.common.by import By
 
@@ -9,9 +10,9 @@ logger = get_logger(__name__)
 
 
 class CartItemComponent(BaseComponent):
-    REMOVE_BTN = (By.CSS_SELECTOR, "a .remove")
+    REMOVE_BTN = (By.CLASS_NAME, "remove")
     NAME = (By.CSS_SELECTOR, ".product-name a")
-    VARIATION = (By.CSS_SELECTOR, ".variation p")
+    VARIATION = (By.CSS_SELECTOR, ".variation")
     PRICE = (By.CSS_SELECTOR, ".product-price bdi")
     QUANTITY = (By.CLASS_NAME, "qty")
     SUBTOTAL = (By.CSS_SELECTOR, ".product-subtotal bdi")
@@ -22,8 +23,11 @@ class CartItemComponent(BaseComponent):
         return normalize_text(self.find(self.NAME).text)
     @property
     def variation(self):
-        text = self.find(self.VARIATION).text
-        return text
+        try:
+            el = WebDriverWait(self.root, 2).until(lambda _: self.root.find_element(*self.VARIATION))
+            return el.text
+        except Exception:
+            return ""
 
 
     @property
@@ -39,3 +43,9 @@ class CartItemComponent(BaseComponent):
     def remove(self):
         logger.info("Removing item: %s", self.name)
         self.click(self.REMOVE_BTN)
+
+    @allure.step("Установить количество товара")
+    def set_quantity(self, quantity: int):
+        el = self.find(self.QUANTITY)
+        el.clear()
+        el.send_keys(str(quantity))

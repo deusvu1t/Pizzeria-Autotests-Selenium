@@ -20,3 +20,8 @@ class HeaderComponent(BaseComponent):
     @allure.step("Перейти в корзину через хедер")
     def go_to_cart(self):
         self.click(self.CART_CONTENTS)
+
+    @allure.step("Перейти в раздел меню: {name}")
+    def go_to_menu_item(self, name: str):
+        locator = (By.XPATH, f"//ul[@id='menu-primary-menu']//a[text()='{name}']")
+        self.click(locator)
