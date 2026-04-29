@@ -2,4 +2,3 @@ selenium
 pytest
 allure-pytest
 flake8
-webdriver-manager
