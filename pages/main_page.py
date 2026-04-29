@@ -2,4 +2,4 @@ from pages.base_page import BasePage
 
 
 class MainPage(BasePage):
-    pass
+    URL = "https://pizzeria.skillbox.cc/"
