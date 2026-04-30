@@ -1,6 +1,7 @@
 from selenium.common.exceptions import (
     NoSuchElementException,
     StaleElementReferenceException,
+    TimeoutException,
 )
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -86,3 +87,12 @@ class BasePage:
         field = self.find(locator)
         field.clear()
         field.send_keys(text)
+
+    def is_visible(self, locator, timeout: int = 10) -> bool:
+        try:
+            WebDriverWait(self.driver, timeout).until(
+                EC.visibility_of_element_located(locator)
+            )
+            return True
+        except TimeoutException:
+            return False

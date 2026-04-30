@@ -1,4 +1,5 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
 from components.base_component import BaseComponent
 
@@ -28,6 +29,12 @@ class CartItem(BaseComponent):
         value = self.find(self.QUANTITY).get_attribute("value") or ""
         self.logger.debug(f"Получено количество: {value}")
         return value
+
+    def set_quantity(self, quantity: int):
+        self.logger.info(f"Установка количества товара: {quantity}")
+        field = self.find(self.QUANTITY)
+        field.send_keys(Keys.CONTROL, "a")
+        field.send_keys(str(quantity))
 
     def remove(self):
         self.click(self.REMOVE_BUTTON)

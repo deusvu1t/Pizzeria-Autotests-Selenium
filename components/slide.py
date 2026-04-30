@@ -9,6 +9,7 @@ class Slide(BaseComponent):
     ADDED_BUTTON = (By.CLASS_NAME, "added_to_cart")
     NAME = (By.CSS_SELECTOR, "h3")
     PRICE = (By.CSS_SELECTOR, ".price")
+    IMG = (By.CLASS_NAME, "item-img")
 
     @property
     def name(self) -> str:
@@ -23,3 +24,7 @@ class Slide(BaseComponent):
         self.hover_self()
         self.click(self.ADD_BUTTON)
         self.wait.until(lambda d: self.find_optional(self.ADDED_BUTTON) is not None)
+
+    @allure.step("Перейти на страницу товара")
+    def go_to_product_page(self):
+        self.click(self.IMG)
