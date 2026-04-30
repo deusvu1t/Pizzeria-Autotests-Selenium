@@ -1,12 +1,11 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 
 from components.base_component import BaseComponent
 
 
 class CartItem(BaseComponent):
     NAME = (By.CSS_SELECTOR, ".product-name a")
-    VARIATION = (By.CSS_SELECTOR, ".variation")
+    VARIATION = (By.CSS_SELECTOR, ".variation dd p")
     PRICE = (By.CSS_SELECTOR, ".product-price .amount")
     QUANTITY = (By.CSS_SELECTOR, "input.qty")
     REMOVE_BUTTON = (By.CSS_SELECTOR, ".remove")
@@ -31,9 +30,9 @@ class CartItem(BaseComponent):
         return value
 
     def set_quantity(self, quantity: int):
-        self.logger.info(f"Установка количества товара: {quantity}")
+        self.logger.info(f"Установка количества: {quantity}")
         field = self.find(self.QUANTITY)
-        field.send_keys(Keys.CONTROL, "a")
+        field.clear()
         field.send_keys(str(quantity))
 
     def remove(self):

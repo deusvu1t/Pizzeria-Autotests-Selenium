@@ -11,15 +11,7 @@ class ProductPage(BasePage):
     BOARD_PACK = (By.ID, "board_pack")
     ADDED_TO_CART_MESSAGE = (By.CSS_SELECTOR, ".woocommerce-message")
     VIEW_CART = (By.CSS_SELECTOR, ".woocommerce-message a")
-    ADD_TO_CART = (
-        By.CSS_SELECTOR,
-        "button[type='submit'].single_add_to_cart_button",
-    )
-
-    def open_product(self, slug: str):
-        url = self.BASE_URL + self.PATH + slug
-        self.logger.info(f"Открытие URL: {url}")
-        self.driver.get(url)
+    ADD_TO_CART = (By.CSS_SELECTOR, "button[type='submit'].single_add_to_cart_button")
 
     @property
     def name(self) -> str:
@@ -41,8 +33,7 @@ class ProductPage(BasePage):
 
     def select_board(self, board: str):
         self.logger.info(f"Выбор бортика: {board}")
-        select = Select(self.find(self.BOARD_PACK))
-        select.select_by_visible_text(board)
+        Select(self.find(self.BOARD_PACK)).select_by_visible_text(board)
 
     def add_to_cart(self):
         self.click(self.ADD_TO_CART)

@@ -23,8 +23,8 @@ class BasePage:
         self.wait = WebDriverWait(driver, 10)
         self.logger = get_logger(self.__class__.__name__)
 
-    def open(self):
-        url = self.BASE_URL + self.PATH
+    def open(self, path_suffix: str = ""):
+        url = self.BASE_URL + self.PATH + path_suffix
         self.logger.info(f"Открытие URL: {url}")
         self.driver.get(url)
 

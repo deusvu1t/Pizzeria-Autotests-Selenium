@@ -13,29 +13,21 @@ class CartPage(BasePage):
     CART_UPDATED_MESSAGE = (By.CSS_SELECTOR, ".woocommerce-message")
     CART_EMPTY_MESSAGE = (By.CSS_SELECTOR, ".cart-empty")
 
-    def get_cart_items(self) -> list[CartItem]:
-        return [CartItem(el, self) for el in self.find_all(self.CART_ITEM)]
+    def get_cart_items(self, wait: bool = True) -> list[CartItem]:
+        if wait:
+            elements = self.find_all(self.CART_ITEM)
+        else:
+            elements = [
+                el
+                for el in self.driver.find_elements(*self.CART_ITEM)
+                if el.is_displayed()
+            ]
+        return [CartItem(el, self) for el in elements]
 
     def find_item(
-        self, name: str, variation: str | None = None
+        self, name: str, variation: str | None = None, wait: bool = True
     ) -> CartItem | None:
-        items = self.get_cart_items()
-        return self._find_item_in_items(items, name, variation)
-
-    def find_item_optional(
-        self, name: str, variation: str | None = None
-    ) -> CartItem | None:
-        elements = self.driver.find_elements(*self.CART_ITEM)
-        items = [CartItem(el, self) for el in elements if el.is_displayed()]
-        return self._find_item_in_items(items, name, variation)
-
-    def _find_item_in_items(
-        self,
-        items: list[CartItem],
-        name: str,
-        variation: str | None = None,
-    ) -> CartItem | None:
-        for item in items:
+        for item in self.get_cart_items(wait=wait):
             name_match = normalize_text(item.name) == normalize_text(name)
             variation_match = variation is None or (
                 item.variation is not None
@@ -51,4 +43,7 @@ class CartPage(BasePage):
         self.find(self.CART_UPDATED_MESSAGE)
 
     def wait_until_item_removed(self, name: str):
-        self.wait.until(lambda _: self.find_item_optional(name) is None)
+        self.wait.until(lambda _: self.find_item(name, wait=False) is None)
+
+    def is_cart_empty(self) -> bool:
+        return self.is_visible(self.CART_EMPTY_MESSAGE)

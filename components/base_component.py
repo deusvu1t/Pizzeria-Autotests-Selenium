@@ -1,4 +1,3 @@
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote.webelement import WebElement
 
 
@@ -33,16 +32,7 @@ class BaseComponent:
         self.logger.debug(f"Получен текст из элемента: {locator} → '{text}'")
         return text
 
-    def is_visible(self, locator=None, timeout: int = 10) -> bool:
-        try:
-            if locator is None:
-                return self.element.is_displayed()
-
-            self.wait.until(
-                lambda _: (
-                    element := self.element.find_element(*locator)
-                ).is_displayed()
-            )
-            return True
-        except TimeoutException:
-            return False
+    def is_visible(self, locator=None) -> bool:
+        if locator is None:
+            return self.element.is_displayed()
+        return self.find_optional(locator) is not None

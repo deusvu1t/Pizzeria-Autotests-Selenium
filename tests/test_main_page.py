@@ -1,6 +1,7 @@
 import allure
 
 from pages.cart_page import CartPage
+from pages.catalog_page import CatalogPage
 from pages.main_page import MainPage
 from pages.product_page import ProductPage
 from utils.helpers import normalize_text
@@ -198,9 +199,7 @@ class TestMainPage:
 
         with allure.step(f"Найти пиццу '{pizza_name}' в корзине"):
             item = cart_page.find_item(pizza_name)
-            assert item is not None, (
-                f"Пицца '{pizza_name}' не найдена в корзине"
-            )
+            assert item is not None, f"Пицца '{pizza_name}' не найдена в корзине"
 
         with allure.step("Изменить количество товара на 2"):
             item.set_quantity(2)
@@ -212,15 +211,12 @@ class TestMainPage:
                 f"Пицца '{pizza_name}' не найдена после обновления корзины"
             )
             assert updated_item.quantity == "2", (
-                f"Количество: ожидалось '2', "
-                f"получено '{updated_item.quantity}'"
+                f"Количество: ожидалось '2', получено '{updated_item.quantity}'"
             )
 
     @allure.story("Удаление товара из корзины")
     @allure.title("Пицца удаляется из корзины")
-    def test_remove_product_from_cart(
-        self, main_page: MainPage, cart_page: CartPage
-    ):
+    def test_remove_product_from_cart(self, main_page: MainPage, cart_page: CartPage):
         with allure.step("Открыть главную страницу"):
             main_page.open()
 
@@ -236,19 +232,14 @@ class TestMainPage:
 
         with allure.step(f"Найти пиццу '{pizza_name}' в корзине"):
             item = cart_page.find_item(pizza_name)
-            assert item is not None, (
-                f"Пицца '{pizza_name}' не найдена в корзине"
-            )
+            assert item is not None, f"Пицца '{pizza_name}' не найдена в корзине"
 
         with allure.step(f"Удалить пиццу '{pizza_name}' из корзины"):
             item.remove()
             cart_page.wait_until_item_removed(pizza_name)
 
         with allure.step("Проверить, что пицца удалена из корзины"):
-            removed_item = cart_page.find_item_optional(pizza_name)
-            assert removed_item is None, (
-                f"Пицца '{pizza_name}' всё ещё отображается в корзине"
-            )
+            assert cart_page.is_cart_empty()
 
     @allure.story("Переход на страницу продукта")
     @allure.title("При клике на пиццу открывается страница выбранного продукта")
