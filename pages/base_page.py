@@ -1,22 +1,88 @@
-import allure
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    StaleElementReferenceException,
+)
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
+from components.nav_panel import NavPanel
 from utils.logger import get_logger
-
-logger = get_logger(__name__)
 
 
 class BasePage:
-    URL = None
+    BASE_URL = "https://pizzeria.skillbox.cc"
+    PATH = ""
+    NAV_PANEL = (By.CSS_SELECTOR, "header")
 
     def __init__(self, driver):
-        if not self.URL:
-            raise ValueError("Page requires a non-empty url")
-
         self.driver = driver
-        self.url = self.URL
-        self.timeout = 10
+        self.wait = WebDriverWait(driver, 10)
+        self.logger = get_logger(self.__class__.__name__)
 
     def open(self):
-        with allure.step(f"Открытие страницы {self.url}"):
-            logger.info(f"Opening URL: {self.url}")
-            self.driver.get(self.url)
+        url = self.BASE_URL + self.PATH
+        self.logger.info(f"Открытие URL: {url}")
+        self.driver.get(url)
+
+    @property
+    def header(self):
+        return NavPanel(self.find(self.NAV_PANEL), self)
+
+    def find(self, locator):
+        self.logger.debug(f"Поиск элемента: {locator}")
+        return self.wait.until(EC.visibility_of_element_located(locator))
+
+    def find_all(self, locator):
+        self.logger.debug(f"Поиск всех элементов: {locator}")
+        return self.wait.until(EC.visibility_of_all_elements_located(locator))
+
+    def find_in(self, locator, element: WebElement):
+        self.logger.debug(f"Поиск видимого элемента {locator} внутри {element}")
+
+        def condition(_):
+            try:
+                found = element.find_element(*locator)
+                return found if found.is_displayed() else False
+            except (NoSuchElementException, StaleElementReferenceException):
+                return False
+
+        return self.wait.until(condition)
+
+    def find_all_in(self, locator, element: WebElement):
+        self.logger.debug(f"Поиск видимых элементов {locator} внутри {element}")
+
+        def condition(_):
+            try:
+                elements = element.find_elements(*locator)
+                visible = [el for el in elements if el.is_displayed()]
+                return visible if visible else False
+            except StaleElementReferenceException:
+                return False
+
+        return self.wait.until(condition)
+
+    def hover(self, element: WebElement):
+        self.logger.debug(f"Наведение на элемент: {element}")
+        ActionChains(self.driver).move_to_element(element).perform()
+
+    def click(self, locator):
+        self.logger.info(f"Клик по элементу: {locator}")
+        self.find(locator).click()
+
+    def click_in(self, locator, element: WebElement):
+        self.logger.info(f"Клик по элементу {locator} внутри {element}")
+        self.find_in(locator, element).click()
+
+    def get_text(self, locator) -> str:
+        text = self.find(locator).text
+        self.logger.debug(f"Получен текст '{text}' из элемента: {locator}")
+        return text
+
+    def input_text(self, locator, text: str):
+        self.logger.debug(f"Ввод текста '{text}' в элемент: {locator}")
+        field = self.find(locator)
+        field.clear()
+        field.send_keys(text)
