@@ -7,4 +7,12 @@ def normalize_text(text: str) -> str:
 
 
 def parse_price(price: str) -> int:
-    return int("".join(filter(str.isdigit, price)))
+    price = price.replace("₽", "").strip()
+
+    # убираем копейки
+    if "," in price:
+        price = price.split(",")[0]
+    elif "." in price:
+        price = price.split(".")[0]
+
+    return int(price)

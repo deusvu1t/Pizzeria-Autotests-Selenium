@@ -12,6 +12,7 @@ class CartPage(BasePage):
     UPDATE_CART = (By.CSS_SELECTOR, "button[name='update_cart']")
     CART_UPDATED_MESSAGE = (By.CSS_SELECTOR, ".woocommerce-message")
     CART_EMPTY_MESSAGE = (By.CSS_SELECTOR, ".cart-empty")
+    CHECKOUT_BUTTON = (By.CLASS_NAME, "checkout-button")
 
     def get_cart_items(self, wait: bool = True) -> list[CartItem]:
         if wait:
@@ -47,3 +48,6 @@ class CartPage(BasePage):
 
     def is_cart_empty(self) -> bool:
         return self.is_visible(self.CART_EMPTY_MESSAGE)
+
+    def checkout(self):
+        self.click(self.CHECKOUT_BUTTON)
