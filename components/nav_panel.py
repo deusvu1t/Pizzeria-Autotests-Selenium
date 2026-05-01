@@ -1,4 +1,6 @@
+import allure
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 from components.base_component import BaseComponent
 
@@ -14,13 +16,17 @@ class NavPanel(BaseComponent):
     def cart_total(self) -> str:
         return self.get_text(self.CART_TOTAL)
 
+    @allure.step("Перейти в корзину")
     def go_to_cart(self):
         self.click(self.CART_ICON)
 
-    def go_to_login(self):
+    @allure.step("Перейти в аккаунт")
+    def go_to_account(self):
         self.click(self.LOGIN_LINK)
 
-    def go_to_deserts(self):
-        self.logger.info("Переход в раздел десертов")
-        self.hover(self.find(self.MENU_LINK))
+    @allure.step("Перейти в раздел «Десерты»")
+    def go_to_desserts(self):
+        menu_link = self.find(self.MENU_LINK)
+        self.hover(menu_link)
+        self.wait.until(EC.visibility_of_element_located(self.DESSERTS_LINK))
         self.click(self.DESSERTS_LINK)

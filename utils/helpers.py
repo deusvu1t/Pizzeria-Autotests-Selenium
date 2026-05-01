@@ -1,18 +1,12 @@
 def normalize_text(text: str) -> str:
-    """Приводит кавычки и пробелы к единому виду."""
-    text = text.strip()
-    text = text.replace("«", '"').replace("»", '"')
-    text = text.upper()
-    return text
+    return text.strip().replace("«", '"').replace("»", '"').upper()
 
 
 def parse_price(price: str) -> int:
-    price = price.replace("₽", "").strip()
-
-    # убираем копейки
-    if "," in price:
-        price = price.split(",")[0]
-    elif "." in price:
-        price = price.split(".")[0]
-
-    return int(price)
+    cleaned = price.replace("₽", "").replace("\u00a0", "").strip()
+    cleaned = cleaned.replace(" ", "")
+    if "," in cleaned:
+        cleaned = cleaned.split(",")[0]
+    elif "." in cleaned:
+        cleaned = cleaned.split(".")[0]
+    return int(cleaned)

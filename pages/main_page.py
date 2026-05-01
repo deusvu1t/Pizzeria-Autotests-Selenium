@@ -5,6 +5,7 @@ from pages.base_page import BasePage
 
 
 class MainPage(BasePage):
+    PATH = "/"
     _PIZZA_SLIDER = (By.ID, "product1")
 
     @property

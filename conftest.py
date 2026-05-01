@@ -8,6 +8,11 @@ pytest_plugins = [
 ]
 
 
+@pytest.fixture
+def test_user():
+    return {"username": "test_username001", "password": "test123"}
+
+
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield

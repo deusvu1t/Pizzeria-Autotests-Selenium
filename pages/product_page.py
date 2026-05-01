@@ -1,3 +1,4 @@
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
@@ -31,13 +32,15 @@ class ProductPage(BasePage):
         select = Select(self.find(self.BOARD_PACK))
         return select.first_selected_option.text
 
+    @allure.step("Выбрать борт: {board}")
     def select_board(self, board: str):
-        self.logger.info(f"Выбор бортика: {board}")
         Select(self.find(self.BOARD_PACK)).select_by_visible_text(board)
 
+    @allure.step("Добавить товар в корзину со страницы продукта")
     def add_to_cart(self):
         self.click(self.ADD_TO_CART)
         self.find(self.ADDED_TO_CART_MESSAGE)
 
+    @allure.step("Перейти в корзину из сообщения об успехе")
     def go_to_cart_from_message(self):
         self.click(self.VIEW_CART)

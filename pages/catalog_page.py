@@ -1,3 +1,4 @@
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -6,11 +7,14 @@ from pages.base_page import BasePage
 
 
 class CatalogPage(BasePage):
+    PATH = "/product-category/menu/"
     PRODUCTS = (By.CSS_SELECTOR, "ul.products li.product")
-    PRICE_SLIDER_AMOUNT = (By.CSS_SELECTOR, ".price_slider_amount")
-    PRICE_SLIDER = (By.CSS_SELECTOR, ".price_slider")
-    MIN_PRICE_INPUT = (By.ID, "min_price")
+    CATEGORY_DROPDOWN = (
+        By.CSS_SELECTOR,
+        "select.orderby",
+    )
     MAX_PRICE_INPUT = (By.ID, "max_price")
+    MIN_PRICE_INPUT = (By.ID, "min_price")
     APPLY_PRICE_FILTER = (By.CSS_SELECTOR, ".price_slider_amount button")
 
     @property
@@ -23,8 +27,8 @@ class CatalogPage(BasePage):
         elements = self.find_all(self.PRODUCTS)
         return [CatalogItem(el, self) for el in elements]
 
+    @allure.step("Установить максимальную цену фильтра: {max_price}")
     def set_max_price_filter(self, max_price: int, apply: bool = True):
-        self.logger.info(f"Установка максимальной цены: {max_price}")
         min_price_input = self._find_hidden(self.MIN_PRICE_INPUT)
         max_price_input = self._find_hidden(self.MAX_PRICE_INPUT)
 
@@ -41,9 +45,7 @@ class CatalogPage(BasePage):
             """
             var maxInput = document.getElementById('max_price');
             maxInput.value = arguments[0];
-
-            var slider = jQuery(".price_slider");
-            slider.slider("values", 1, arguments[0]);
+            jQuery(".price_slider").slider("values", 1, arguments[0]);
             """,
             str(max_price),
         )

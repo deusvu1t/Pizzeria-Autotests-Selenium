@@ -19,11 +19,11 @@ class Slide(BaseComponent):
     def price(self) -> str:
         return self.get_text(self.PRICE)
 
-    @allure.step("Добавить товар в корзину")
+    @allure.step("Добавить товар из слайдера в корзину")
     def add_to_cart(self):
         self.hover_self()
         self.click(self.ADD_BUTTON)
-        self.wait.until(lambda d: self.find_optional(self.ADDED_BUTTON) is not None)
+        self.wait.until(lambda _: self.find_optional(self.ADDED_BUTTON) is not None)
 
     @allure.step("Перейти на страницу товара")
     def go_to_product_page(self):

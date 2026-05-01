@@ -1,3 +1,4 @@
+import allure
 from selenium.webdriver.common.by import By
 
 from components.base_component import BaseComponent
@@ -26,14 +27,15 @@ class CartItem(BaseComponent):
     @property
     def quantity(self) -> str:
         value = self.find(self.QUANTITY).get_attribute("value") or ""
-        self.logger.debug(f"Получено количество: {value}")
+        self.logger.debug(f"Количество позиции «{self.name}»: {value}")
         return value
 
+    @allure.step("Установить количество товара в корзине")
     def set_quantity(self, quantity: int):
-        self.logger.info(f"Установка количества: {quantity}")
         field = self.find(self.QUANTITY)
         field.clear()
         field.send_keys(str(quantity))
 
+    @allure.step("Удалить товар из корзины")
     def remove(self):
         self.click(self.REMOVE_BUTTON)

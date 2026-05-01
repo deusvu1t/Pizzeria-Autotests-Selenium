@@ -1,3 +1,4 @@
+import allure
 from selenium.common.exceptions import (
     NoSuchElementException,
     StaleElementReferenceException,
@@ -23,24 +24,25 @@ class BasePage:
         self.wait = WebDriverWait(driver, 10)
         self.logger = get_logger(self.__class__.__name__)
 
+    @allure.step("Открыть страницу")
     def open(self, path_suffix: str = ""):
         url = self.BASE_URL + self.PATH + path_suffix
         self.logger.info(f"Открытие URL: {url}")
         self.driver.get(url)
 
     @property
-    def header(self):
+    def header(self) -> NavPanel:
         return NavPanel(self.find(self.NAV_PANEL), self)
 
-    def find(self, locator):
+    def find(self, locator) -> WebElement:
         self.logger.debug(f"Поиск элемента: {locator}")
         return self.wait.until(EC.visibility_of_element_located(locator))
 
-    def find_all(self, locator):
+    def find_all(self, locator) -> list[WebElement]:
         self.logger.debug(f"Поиск всех элементов: {locator}")
         return self.wait.until(EC.visibility_of_all_elements_located(locator))
 
-    def find_in(self, locator, element: WebElement):
+    def find_in(self, locator, element: WebElement) -> WebElement:
         self.logger.debug(f"Поиск видимого элемента {locator} внутри {element}")
 
         def condition(_):
@@ -52,7 +54,7 @@ class BasePage:
 
         return self.wait.until(condition)
 
-    def find_all_in(self, locator, element: WebElement):
+    def find_all_in(self, locator, element: WebElement) -> list[WebElement]:
         self.logger.debug(f"Поиск видимых элементов {locator} внутри {element}")
 
         def condition(_):
@@ -70,11 +72,11 @@ class BasePage:
         ActionChains(self.driver).move_to_element(element).perform()
 
     def click(self, locator):
-        self.logger.info(f"Клик по элементу: {locator}")
+        self.logger.debug(f"Клик по элементу: {locator}")
         self.find(locator).click()
 
     def click_in(self, locator, element: WebElement):
-        self.logger.info(f"Клик по элементу {locator} внутри {element}")
+        self.logger.debug(f"Клик по элементу {locator} внутри {element}")
         self.find_in(locator, element).click()
 
     def get_text(self, locator) -> str:
@@ -83,7 +85,7 @@ class BasePage:
         return text
 
     def input_text(self, locator, text: str):
-        self.logger.debug(f"Ввод текста '{text}' в элемент: {locator}")
+        self.logger.debug(f"Ввод текста в элемент: {locator}")
         field = self.find(locator)
         field.clear()
         field.send_keys(text)

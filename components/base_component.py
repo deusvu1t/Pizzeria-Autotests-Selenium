@@ -8,20 +8,20 @@ class BaseComponent:
         self.wait = page.wait
         self.logger = page.logger
 
-    def find(self, locator):
+    def find(self, locator) -> WebElement:
         return self.page.find_in(locator, self.element)
 
-    def find_all(self, locator):
+    def find_all(self, locator) -> list[WebElement]:
         return self.page.find_all_in(locator, self.element)
 
-    def find_optional(self, locator):
+    def find_optional(self, locator) -> WebElement | None:
         elements = self.element.find_elements(*locator)
         return elements[0] if elements else None
 
     def click(self, locator):
         self.page.click_in(locator, self.element)
 
-    def hover(self, element):
+    def hover(self, element: WebElement):
         self.page.hover(element)
 
     def hover_self(self):
@@ -29,7 +29,7 @@ class BaseComponent:
 
     def get_text(self, locator) -> str:
         text = self.find(locator).text
-        self.logger.debug(f"Получен текст из элемента: {locator} → '{text}'")
+        self.logger.debug(f"Получен текст из элемента {locator}: '{text}'")
         return text
 
     def is_visible(self, locator=None) -> bool:

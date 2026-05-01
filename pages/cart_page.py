@@ -1,3 +1,4 @@
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -38,8 +39,8 @@ class CartPage(BasePage):
                 return item
         return None
 
+    @allure.step("Обновить корзину")
     def update_cart(self):
-        self.logger.info("Обновление корзины")
         self.wait.until(EC.element_to_be_clickable(self.UPDATE_CART)).click()
         self.find(self.CART_UPDATED_MESSAGE)
 
@@ -49,5 +50,6 @@ class CartPage(BasePage):
     def is_cart_empty(self) -> bool:
         return self.is_visible(self.CART_EMPTY_MESSAGE)
 
+    @allure.step("Перейти к оформлению заказа")
     def checkout(self):
         self.click(self.CHECKOUT_BUTTON)
