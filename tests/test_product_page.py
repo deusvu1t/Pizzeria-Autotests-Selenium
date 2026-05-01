@@ -62,7 +62,6 @@ class TestProductPage:
         cart_page: CartPage,
     ):
         with allure.step("Перейти на страницу первой пиццы из слайдера"):
-            pizza_name_in_slider = opened_main_page.pizza_slider.get_slide(1).name
             opened_main_page.pizza_slider.get_slide(1).go_to_product_page()
 
         with allure.step("Запомнить название пиццы со страницы продукта"):
@@ -89,7 +88,6 @@ class TestProductPage:
             assert normalize_text(item.name) == normalize_text(pizza_name), (
                 f"Название: ожидалось '{pizza_name}', получено '{item.name}'"
             )
-            # Название бортика до " - " — это то, что отображается в вариации корзины
             expected_board = selected_board.split(" - ")[0]
             actual_variation = item.variation or ""
             assert normalize_text(expected_board) in normalize_text(actual_variation), (
