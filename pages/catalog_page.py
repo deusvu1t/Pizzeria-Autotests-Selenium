@@ -1,10 +1,12 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
+from components.catalog_item import CatalogItem
 from pages.base_page import BasePage
 
 
 class CatalogPage(BasePage):
+    PRODUCTS = (By.CSS_SELECTOR, "ul.products li.product")
     PRICE_SLIDER_AMOUNT = (By.CSS_SELECTOR, ".price_slider_amount")
     PRICE_SLIDER = (By.CSS_SELECTOR, ".price_slider")
     MIN_PRICE_INPUT = (By.ID, "min_price")
@@ -16,6 +18,10 @@ class CatalogPage(BasePage):
         return int(
             self._find_hidden(self.MAX_PRICE_INPUT).get_attribute("value") or "0"
         )
+
+    def get_products(self) -> list[CatalogItem]:
+        elements = self.find_all(self.PRODUCTS)
+        return [CatalogItem(el, self) for el in elements]
 
     def set_max_price_filter(self, max_price: int, apply: bool = True):
         self.logger.info(f"Установка максимальной цены: {max_price}")
