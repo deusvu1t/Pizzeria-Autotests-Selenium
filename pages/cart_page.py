@@ -4,7 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from components.cart_item import CartItem
 from pages.base_page import BasePage
-from utils.helpers import normalize_text
+from utils.helpers import normalize_text, parse_price
 
 
 class CartPage(BasePage):
@@ -14,6 +14,12 @@ class CartPage(BasePage):
     CART_UPDATED_MESSAGE = (By.CSS_SELECTOR, ".woocommerce-message")
     CART_EMPTY_MESSAGE = (By.CSS_SELECTOR, ".cart-empty")
     CHECKOUT_BUTTON = (By.CLASS_NAME, "checkout-button")
+    COUPON_INPUT = (By.NAME, "coupon_code")
+    COUPON_APPLY_BUTTON = (By.NAME, "apply_coupon")
+    COUPON_SUCCESS = (By.CSS_SELECTOR, ".woocommerce-message")
+    COUPON_ERROR = (By.CSS_SELECTOR, ".woocommerce-error")
+    CART_TOTAL = (By.CSS_SELECTOR, ".order-total .amount")
+    DISCOUNT_ROW = (By.CSS_SELECTOR, ".cart-discount .amount")
 
     def get_cart_items(self, wait: bool = True) -> list[CartItem]:
         if wait:
@@ -53,3 +59,37 @@ class CartPage(BasePage):
     @allure.step("Перейти к оформлению заказа")
     def checkout(self):
         self.click(self.CHECKOUT_BUTTON)
+
+    @allure.step("Применить купон: {code}")
+    def apply_coupon(self, code: str):
+        self.input_text(self.COUPON_INPUT, code)
+        self.click(self.COUPON_APPLY_BUTTON)
+        self._wait_for_totals_update()
+
+    def is_coupon_applied(self) -> bool:
+        return self.is_visible(self.COUPON_SUCCESS, timeout=5)
+
+    def is_coupon_error_shown(self) -> bool:
+        return self.is_visible(self.COUPON_ERROR, timeout=5)
+
+    def get_total_price(self) -> int:
+        return parse_price(self.get_text(self.CART_TOTAL))
+
+    def get_discount_amount(self) -> int:
+        if not self.is_visible(self.DISCOUNT_ROW, timeout=3):
+            return 0
+        return parse_price(self.get_text(self.DISCOUNT_ROW))
+
+    def _wait_for_totals_update(self):
+        BLOCK_OVERLAY = (By.CSS_SELECTOR, ".cart_totals .blockOverlay")
+
+        try:
+            from selenium.webdriver.support.ui import WebDriverWait
+
+            WebDriverWait(self.driver, 2).until(
+                EC.presence_of_element_located(BLOCK_OVERLAY)
+            )
+        except Exception:
+            pass
+
+        self.wait.until(EC.invisibility_of_element_located(BLOCK_OVERLAY))

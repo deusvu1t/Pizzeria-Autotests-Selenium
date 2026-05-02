@@ -1,6 +1,7 @@
 import pytest
 
 from pages.account_page import AccountPage
+from pages.bonus_page import BonusPage
 from pages.cart_page import CartPage
 from pages.catalog_page import CatalogPage
 from pages.checkout_page import CheckoutPage
@@ -37,6 +38,18 @@ def checkout_page(driver) -> CheckoutPage:
 @pytest.fixture
 def account_page(driver) -> AccountPage:
     return AccountPage(driver=driver)
+
+
+@pytest.fixture
+def bonus_page(driver) -> BonusPage:
+    return BonusPage(driver=driver)
+
+
+@pytest.fixture
+def opened_bonus_page(bonus_page: BonusPage) -> BonusPage:
+
+    bonus_page.open()
+    return bonus_page
 
 
 @pytest.fixture

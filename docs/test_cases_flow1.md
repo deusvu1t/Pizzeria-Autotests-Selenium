@@ -2,7 +2,6 @@
 
 ### TC-01: Отображение слайдера пицц
 
-**Источник:** :contentReference[oaicite:0]{index=0}
 **Preconditions:** пользователь не авторизован
 **Steps:**
 
@@ -16,7 +15,6 @@
 
 ### TC-02: Отображение первых 4 слайдов
 
-**Источник:** :contentReference[oaicite:1]{index=1}
 **Preconditions:** главная страница открыта
 **Steps:**
 
@@ -29,7 +27,6 @@
 
 ### TC-03: Hover → кнопка "В корзину"
 
-**Источник:** :contentReference[oaicite:2]{index=2}
 **Preconditions:** главная страница
 **Steps:**
 
@@ -42,7 +39,6 @@
 
 ### TC-04: Переключение слайдера
 
-**Источник:** :contentReference[oaicite:3]{index=3}
 **Preconditions:** главная страница
 **Steps:**
 
@@ -58,7 +54,6 @@
 
 ### TC-05: Добавление пиццы после прокрутки
 
-**Источник:** :contentReference[oaicite:4]{index=4}
 **Preconditions:** главная страница
 **Steps:**
 
@@ -74,7 +69,6 @@
 
 ### TC-06: Добавление нескольких пицц
 
-**Источник:** :contentReference[oaicite:5]{index=5}
 **Preconditions:** главная страница
 **Steps:**
 
@@ -91,7 +85,6 @@
 
 ### TC-07: Переход на страницу продукта
 
-**Источник:** :contentReference[oaicite:6]{index=6}
 **Preconditions:** главная страница
 **Steps:**
 
@@ -105,7 +98,6 @@
 
 ### TC-08: Выбор опции бортика
 
-**Источник:** :contentReference[oaicite:7]{index=7}
 **Preconditions:** страница продукта
 **Steps:**
 
@@ -119,7 +111,6 @@
 
 ### TC-09: Добавление пиццы с опцией
 
-**Источник:** :contentReference[oaicite:8]{index=8}
 **Preconditions:** страница продукта
 **Steps:**
 
@@ -137,7 +128,6 @@
 
 ### TC-10: Изменение количества товара
 
-**Источник:** :contentReference[oaicite:9]{index=9}
 **Preconditions:** товар в корзине
 **Steps:**
 
@@ -151,7 +141,6 @@
 
 ### TC-11: Удаление товара из корзины
 
-**Источник:** :contentReference[oaicite:10]{index=10}
 **Preconditions:** товар в корзине
 **Steps:**
 
@@ -166,7 +155,6 @@
 
 ### TC-12: Фильтр по цене
 
-**Источник:** :contentReference[oaicite:11]{index=11}
 **Preconditions:** открыт раздел «Десерты»
 **Steps:**
 
@@ -181,7 +169,6 @@
 
 ### TC-13: Добавление десерта в корзину
 
-**Источник:** :contentReference[oaicite:12]{index=12}
 **Preconditions:** каталог открыт
 **Steps:**
 
@@ -198,7 +185,6 @@
 
 ### TC-14: Авторизация пользователя
 
-**Источник:** :contentReference[oaicite:13]{index=13}
 **Preconditions:** пользователь существует
 **Steps:**
 
@@ -214,7 +200,6 @@
 
 ### TC-15: Требование авторизации при оформлении
 
-**Источник:** :contentReference[oaicite:14]{index=14}
 **Preconditions:** пользователь не авторизован
 **Steps:**
 
@@ -229,7 +214,6 @@
 
 ### TC-16: Успешное оформление заказа
 
-**Источник:** :contentReference[oaicite:15]{index=15}
 **Preconditions:** пользователь авторизован
 **Steps:**
 

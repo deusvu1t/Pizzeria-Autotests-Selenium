@@ -25,29 +25,34 @@ def browser_name(request):
     return request.config.getoption("--browser").lower()
 
 
+def _make_chrome_options(is_ci: bool) -> ChromeOptions:
+    options = ChromeOptions()
+    if is_ci:
+        options.add_argument("--headless=new")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--window-size=1920,1080")
+    return options
+
+
+def _make_firefox_options(is_ci: bool) -> FirefoxOptions:
+    options = FirefoxOptions()
+    if is_ci:
+        options.add_argument("--headless")
+    options.add_argument("--width=1920")
+    options.add_argument("--height=1080")
+    return options
+
+
 @pytest.fixture
 def driver(browser_name):
-    # GitHub Actions выставляет CI=true автоматически
     is_ci = os.getenv("CI", "false").lower() == "true"
     logger.info(f"Starting browser: {browser_name} | headless: {is_ci}")
 
     if browser_name == "chrome":
-        options = ChromeOptions()
-        if is_ci:
-            options.add_argument("--headless=new")
-            options.add_argument("--no-sandbox")
-            options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--window-size=1920,1080")
-        drv = webdriver.Chrome(options=options)
-
+        drv = webdriver.Chrome(options=_make_chrome_options(is_ci))
     elif browser_name == "firefox":
-        options = FirefoxOptions()
-        if is_ci:
-            options.add_argument("--headless")
-        options.add_argument("--width=1920")
-        options.add_argument("--height=1080")
-        drv = webdriver.Firefox(options=options)
-
+        drv = webdriver.Firefox(options=_make_firefox_options(is_ci))
     else:
         raise ValueError(f"Unsupported browser: {browser_name}")
 
