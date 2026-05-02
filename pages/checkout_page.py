@@ -8,8 +8,6 @@ from pages.base_page import BasePage
 
 @dataclass
 class DeliveryData:
-    """Данные для заполнения формы доставки."""
-
     first_name: str
     last_name: str
     address: str
